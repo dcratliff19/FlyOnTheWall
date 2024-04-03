@@ -1,0 +1,111 @@
+import mysql.connector
+import matplotlib.pyplot as plt 
+import numpy as np 
+import wave, sys 
+from scipy.io.wavfile import write
+import pyaudio
+import sys
+import csv
+
+
+def get_sound_example(id, sec_before = 1, sec_after = 1):
+
+
+    cnx = mysql.connector.connect(user='root', password='password',
+                                host='127.0.0.1',
+                                database='sound')
+
+    sql = 'SELECT * FROM `raw_sounds` WHERE id between ' + str(id - (sec_before)) + ' and ' + str(id + (sec_after)) + ';'
+    mycursor = cnx.cursor()
+    mycursor.execute(sql)
+
+    database_results = mycursor.fetchall()
+    # New empty list called 'result'. This will be written to a file.
+    csv_result = list()
+    # The row name is the first entry for each entity in the description tuple.
+    column_names = list()
+    #sound file
+    sound = bytes()
+
+    #Add the column names
+    column_names.append('id')
+    for i in mycursor.description[2:]:
+        column_names.append(i[0])
+
+    csv_result.append(column_names)
+    for result in database_results:
+        sound += result[1]
+        csv_result.append(result[:1] + result[2:])
+
+    numpydata = np.frombuffer(sound, dtype=np.int16)
+    # Write result to file.
+    with open('audio.csv', 'w', newline='') as csvfile:
+        csvwriter = csv.writer(csvfile, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        for row in csv_result:
+            csvwriter.writerow(row)
+
+    write('audio.wav', 44100, numpydata)
+
+def play_sound_example(filename):
+    # length of data to read.
+    chunk = 1024
+    # open the file for reading.
+    wf = wave.open(filename, 'rb')
+
+    # create an audio object
+    p = pyaudio.PyAudio()
+
+    # open stream based on the wave object which has been input.
+    stream = p.open(format =
+                    p.get_format_from_width(wf.getsampwidth()),
+                    channels = wf.getnchannels(),
+                    rate = wf.getframerate(),
+                    output = True)
+
+    # read data (based on the chunk size)
+    data = wf.readframes(chunk)
+
+    # play stream (looping from beginning of file to the end)
+    while data:
+        # writing to the stream is what *actually* plays the sound.
+        stream.write(data)
+        data = wf.readframes(chunk)
+
+
+    # cleanup stuff.
+    wf.close()
+    stream.close()    
+    p.terminate()
+  
+
+if __name__ == "__main__":
+    
+    if sys.argv[1] == "--id":   
+        if len(sys.argv) == 5:
+            current = 1
+
+            try:
+                for i in range(2, 5):
+                    current = i
+                    if int(sys.argv[i]) < 0:
+                        raise Exception('Make sure all arguements are integers > 0')
+                        
+            except Exception as e:
+                print("Arguement " + str(current) + " has the following error: " + str(e))
+                sys.exit()
+
+            print("Querying for requested audio...")
+            print("Found audio, saving as audio.wav and audio.csv")
+            if int(sys.argv[3]) > 0 and int(sys.argv[4]) > 0:
+                get_sound_example(int(sys.argv[2]), int(sys.argv[3]) + 1, int(sys.argv[4]) + 1)  
+            else:
+                get_sound_example(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))  
+
+            print("Success")
+            print("Playing sound...")
+            play_sound_example('audio.wav')
+            print('Done, goodbye.')
+
+    elif sys.argv[1] == "--help":
+        print("Commands:")
+        print("--id: Use the database row ID to search for the audio file.\n     -Args: 1 = database ID, 2 = seconds before, 3 = seconds after \n     -Example: --id 64 2 2")
