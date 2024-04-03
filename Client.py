@@ -29,8 +29,10 @@ def get_record():
         
     return all
 
+
 #Fly Away!
 if __name__ == "__main__":
+
   #Print the logo and details to connect.
   print(LOGO)
   print("-- Audio Transmission Client Started --")
@@ -38,6 +40,7 @@ if __name__ == "__main__":
   try:
      
     ws = create_connection(REMOTE_SERVER)
+
   except:
      print("Cannot establish connection to server.")
      exit(0)
@@ -46,16 +49,19 @@ if __name__ == "__main__":
     print("Please login")
     username = input("Device ID: ")
     password = input("Password: ")
+
     ws.send(username + ":" + password)
     status = ws.recv()
+
     if int(status) == 1:
+
       print("Login Successful")
       print('##-- Starting Recording/Transmission --##')
       print('- Remote Server:', REMOTE_SERVER)
       print('- Transmission Interval (seconds):', RECORD_SECONDS, "seconds")
       
       #Fire away!
-      input("Press any key to begin.")
+      input("Press enter key to begin.")
       
       while True:
           
