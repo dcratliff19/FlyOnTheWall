@@ -11,7 +11,34 @@
 |-- FLYONTHEWALL --|
 ```
 FlyOnTheWall is an open source software that collects audio records from client nodes, uses [Google's MediaPipe](https://developers.google.com/mediapipe/solutions/audio/audio_classifier) machine learning library to classify the sounds into one of [yamnet's classes](https://storage.googleapis.com/mediapipe-tasks/audio_classifier/yamnet_label_list.txt), and stores that data into a MySQL Database for later analysis.
-### Report for detecting dog sounds.
+
+## Setup
+1. create a database called `sound` and run the migration (`migration.sql`)
+2. Update the connection info in Server.py
+3. Install mediapipe.
+3. Fly!
+
+## CLI Tool
+
+Options:
+```bash
+--query: Use the database row ID to search for the audio file.     
+      -Args: 1 = database ID, 2 = seconds before, 3 = seconds after 
+      -Example: --id 64 2 2
+--client: runs the FlyOnTheWall Client.
+--server: Runs the FlyOnTheWall server.
+```
+Example: The command `./FlyOnTheWall --query 64 2 2` will output a `audio.wav` file of the audio generated from the database row with ID 64 with 2 seconds (2 rows) before and 2 seconds (2 rows) after. An additional `audio.csv` file will be output containing the raw data.
+
+Note: the MySQL database must be running first.
+
+Start the server: `./FlyOnTheWall --server`
+
+Start the client: `./FlyOnTheWall --client`
+
+
+
+# Reporting using the Raw Data
 
 ```sql
 with class_1_tbl as (

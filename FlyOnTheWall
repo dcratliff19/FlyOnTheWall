@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import mysql.connector
 import matplotlib.pyplot as plt 
 import numpy as np 
@@ -7,13 +9,14 @@ import pyaudio
 import sys
 import csv
 
-cnx = mysql.connector.connect(user='root', password='password',
-                            host='127.0.0.1',
-                            database='sound')
-mycursor = cnx.cursor()
 
 
 def get_sound_example(id, sec_before = 1, sec_after = 1):
+
+    cnx = mysql.connector.connect(user='root', password='password',
+                            host='127.0.0.1',
+                            database='sound')
+    mycursor = cnx.cursor()
 
     sql = 'SELECT * FROM `raw_sounds` WHERE id between ' + str(id - (sec_before)) + ' and ' + str(id + (sec_after)) + ';'
     mycursor = cnx.cursor()
@@ -93,7 +96,7 @@ def validate_params():
 
 if __name__ == "__main__":
     
-    if sys.argv[1] == "--id":   
+    if sys.argv[1] == "--query":   
         if len(sys.argv) == 5:
             
             validate_params()
@@ -113,3 +116,11 @@ if __name__ == "__main__":
 
         print("Commands:")
         print("--id: Use the database row ID to search for the audio file.\n     -Args: 1 = database ID, 2 = seconds before, 3 = seconds after \n     -Example: --id 64 2 2")
+    
+    # Change when classes are implemented
+    elif sys.argv[1] == "--server":
+        exec(open("Server.py").read())
+
+    # Change when classes are implemented
+    elif sys.argv[1] == "--client":
+        exec(open("Client.py").read())

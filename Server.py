@@ -101,7 +101,7 @@ async def handler(websocket):
     AudioData = mp.tasks.components.containers.AudioData
     #classifier
     options = AudioClassifierOptions(
-        base_options=BaseOptions(model_asset_path='1.tflite'),
+        base_options=BaseOptions(model_asset_path='soundModel.tflite'),
         max_results=5,
         running_mode=AudioRunningMode.AUDIO_CLIPS)
 
