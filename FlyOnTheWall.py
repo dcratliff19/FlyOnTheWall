@@ -7,13 +7,13 @@ import pyaudio
 import sys
 import csv
 
+cnx = mysql.connector.connect(user='root', password='password',
+                            host='127.0.0.1',
+                            database='sound')
+mycursor = cnx.cursor()
+
 
 def get_sound_example(id, sec_before = 1, sec_after = 1):
-
-
-    cnx = mysql.connector.connect(user='root', password='password',
-                                host='127.0.0.1',
-                                database='sound')
 
     sql = 'SELECT * FROM `raw_sounds` WHERE id between ' + str(id - (sec_before)) + ' and ' + str(id + (sec_after)) + ';'
     mycursor = cnx.cursor()
@@ -77,35 +77,39 @@ def play_sound_example(filename):
     stream.close()    
     p.terminate()
   
+def validate_params():
+    current = 1
+
+    try:
+        
+        for i in range(2, 5):
+            current = i
+            if int(sys.argv[i]) < 0:
+                raise Exception('Make sure all arguements are integers > 0')
+                
+    except Exception as e:
+        print("Arguement " + str(current) + " has the following error: " + str(e))
+        sys.exit()
 
 if __name__ == "__main__":
     
     if sys.argv[1] == "--id":   
         if len(sys.argv) == 5:
-            current = 1
-
-            try:
-                for i in range(2, 5):
-                    current = i
-                    if int(sys.argv[i]) < 0:
-                        raise Exception('Make sure all arguements are integers > 0')
-                        
-            except Exception as e:
-                print("Arguement " + str(current) + " has the following error: " + str(e))
-                sys.exit()
+            
+            validate_params()
 
             print("Querying for requested audio...")
-            print("Found audio, saving as audio.wav and audio.csv")
             if int(sys.argv[3]) > 0 and int(sys.argv[4]) > 0:
                 get_sound_example(int(sys.argv[2]), int(sys.argv[3]) + 1, int(sys.argv[4]) + 1)  
             else:
                 get_sound_example(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]))  
+            print("Found audio, saving as audio.wav and audio.csv")
 
-            print("Success")
             print("Playing sound...")
             play_sound_example('audio.wav')
             print('Done, goodbye.')
 
     elif sys.argv[1] == "--help":
+
         print("Commands:")
         print("--id: Use the database row ID to search for the audio file.\n     -Args: 1 = database ID, 2 = seconds before, 3 = seconds after \n     -Example: --id 64 2 2")
