@@ -23,7 +23,7 @@ def calculate_decibel(audio):
 
     rms = audioop.rms(audio, 1) / 32767
     db = 20 * log10(rms)
-
+    print("DB:", db)
     return db
 
 def create_record(audio, class_result_list):
@@ -111,9 +111,9 @@ async def handler(websocket):
         print("-- NEW CLIENT CONNECTION FROM " + str(client_ip))
         ##Get the username password
         results = await websocket.recv()
-        username, password = results.split(":")
+        device_id, api_key = results.split(":")
         #Try login
-        if login(username, password):  
+        if login(device_id, api_key):  
             await websocket.send("1")
         else:
             await websocket.send("0")

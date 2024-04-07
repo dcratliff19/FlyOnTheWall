@@ -46,13 +46,13 @@ if __name__ == "__main__":
      exit(0)
 
   try:
-    print("Please login")
-    username = input("Device ID: ")
-    password = input("Password: ")
-
-    ws.send(username + ":" + password)
+    #print("Please login")
+    #username = input("Device ID: ")
+    #api_key = input("API Key: ")
+  
+    ws.send("0:password")
     status = ws.recv()
-
+  
     if int(status) == 1:
 
       print("Login Successful")
