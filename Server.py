@@ -16,7 +16,6 @@ mycursor = cnx.cursor()
 SERVER = "localhost"
 PORT = 5000
 #Device ID 
-current_user = 0
 DEVICE_MASTER = [{"device_id": 0, "password": "password"}, {"device_id": 1, "password": "password"}]
 
 def calculate_decibel(audio):
@@ -26,7 +25,7 @@ def calculate_decibel(audio):
     print("DB:", db)
     return db
 
-def create_record(audio, class_result_list):
+def create_record(audio, class_result_list, device_id):
     
     insert_values = [audio]
    
@@ -66,7 +65,7 @@ def create_record(audio, class_result_list):
 
     ##Add the logging info.
     insert_values.append(time.strftime('%Y-%m-%d %H:%M:%S'))
-    insert_values.append(current_user)
+    insert_values.append(device_id)
 
     try:
         #Insert the data
@@ -85,7 +84,6 @@ def login(username, password):
         return False
         
     else:
-        current_user = username
         print("Client connected:", username)
         return True
 
@@ -100,7 +98,7 @@ async def handler(websocket):
     AudioData = mp.tasks.components.containers.AudioData
     #classifier
     options = AudioClassifierOptions(
-        base_options=BaseOptions(model_asset_path='soundModel.tflite'),
+        base_options=BaseOptions(model_asset_path='models/soundModel.tflite'),
         max_results=5,
         running_mode=AudioRunningMode.AUDIO_CLIPS)
 
@@ -138,7 +136,7 @@ async def handler(websocket):
                     audio_classifier_result_list = classifier.classify(audio_data)
                     #Process and save the results.
                     results = audio_classifier_result_list[0].classifications[0].categories
-                    create_record(audio_buffer, results)
+                    create_record(audio_buffer, results, device_id)
                     print("Results:")
                     for result in results:
 
