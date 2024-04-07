@@ -32,7 +32,7 @@ Example: The command `./FlyOnTheWall --query 64 2 2` will output a `audio.wav` f
 
 Note: the MySQL database must be running first.
 
-# Raw Data Points:
+# Raw Data and Metadata Points:
 
 1. **raw_audio_bytes** - The audio stored as in it's raw byte format.
 2. **class_1 to class_5** - The 5 most likely classes found by the neural network. 	
@@ -46,7 +46,7 @@ db = 20 * log10(rms)
 6. **device_id** - The device ID that recorded the sound.	
 7. **created_at** - The timestamp the record was created at.
 
-# Raw Data Table Structure
+# Data Table Structure
 ```sql
 CREATE TABLE `raw_sounds` (
   `id` int NOT NULL,
