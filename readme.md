@@ -32,18 +32,57 @@ Example: The command `./FlyOnTheWall --query 64 2 2` will output a `audio.wav` f
 
 Note: the MySQL database must be running first.
 
-Start the server: `./FlyOnTheWall --server`
+# Raw Data Points:
 
-Start the client: `./FlyOnTheWall --client`
+1. **raw_audio_bytes** - The audio stored as in it's raw byte format.
+2. **class_1 to class_5** - The 5 most likely classes found by the neural network. 	
+3. **class_1_percent to class_5_percent** - The 5 confidence levels for the corosponding classes. 	
+4. **decibel_reading** - The estimated decibel reading using:
+```python 
+rms = audioop.rms(audio, 1) / 32767
+db = 20 * log10(rms)
+```
+5. **record_datetime** - Time and Date the sound occured.	
+6. **device_id** - The device ID that recorded the sound.	
+7. **created_at** - The timestamp the record was created at.
 
-
+# Raw Data Table Structure
+```sql
+CREATE TABLE `raw_sounds` (
+  `id` int NOT NULL,
+  `raw_audio_bytes` longblob NOT NULL,
+  `class_1` text NOT NULL,
+  `class_2` text NOT NULL,
+  `class_3` text NOT NULL,
+  `class_4` text NOT NULL,
+  `class_5` text NOT NULL,
+  `class_1_percent` float NOT NULL,
+  `class_2_percent` float NOT NULL,
+  `class_3_percent` float NOT NULL,
+  `class_4_percent` float NOT NULL,
+  `class_5_percent` float NOT NULL,
+  `decibel_reading` float NOT NULL,
+  `record_datetime` datetime NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+```
 
 # Reporting using the Raw Data
+The following SQL script can be used to run a report on the occurance of dog barks in the data.
+### Dataset Example:
+```
+sound	                   class avg(decibel_reading) count(*)	
+--------------------------------------------------------------
+"Domestic animals, pets",  4,	 -32.06690931320190,  2	
+"Domestic animals, pets",  3,	 -38.41637420654297,  1	
+Dog,	                   5,	 -44.81098556518555,  1	
 
+```
+### SQL
 ```sql
 with class_1_tbl as (
     SELECT 
-    class_1, 1 as 'class', avg(decibel_reading), count(*)
+    class_1 as 'sound', 1 as 'class', avg(decibel_reading), count(*)
     from raw_sounds 
     group by 1,2  
     ORDER BY `count(*)` DESC
@@ -52,7 +91,7 @@ with class_1_tbl as (
 class_2_tbl as 
 (
     SELECT 
-    class_2, 2 as 'class',avg(decibel_reading), count(*)
+    class_2 as 'sound', 2 as 'class',avg(decibel_reading), count(*)
     from raw_sounds 
     group by 1,2  
     ORDER BY `count(*)` DESC
@@ -61,7 +100,7 @@ class_2_tbl as
 class_3_tbl as 
 (
     SELECT 
-    class_3, 3 as 'class',avg(decibel_reading), count(*)
+    class_3 as 'sound', 3 as 'class',avg(decibel_reading), count(*)
     from raw_sounds 
     group by class_3  
     ORDER BY `count(*)` DESC
@@ -70,7 +109,7 @@ class_3_tbl as
 class_4_tbl as 
 (
     SELECT 
-    class_4, 4 as 'class',avg(decibel_reading), count(*)
+    class_4 as 'sound', 4 as 'class',avg(decibel_reading), count(*)
     from raw_sounds 
     group by class_4  
     ORDER BY `count(*)` DESC
@@ -79,7 +118,7 @@ class_4_tbl as
 class_5_tbl as 
 (
     SELECT 
-    class_5, 5 as 'class',avg(decibel_reading), count(*)
+    class_5 as 'sound', 5 as 'class',avg(decibel_reading), count(*)
     from raw_sounds 
     group by class_5  
     ORDER BY `count(*)` DESC
@@ -100,6 +139,6 @@ final_table as
     order by 4 desc
  )
 select * from final_table
-where class_1 in ('Domestic animals, pets', 'Dog', 'Bark', 'Yip', 'Howl', 'Bow-wow', 'Growling', 'Whimper (dog)');
+where sound in ('Domestic animals, pets', 'Dog', 'Bark', 'Yip', 'Howl', 'Bow-wow', 'Growling', 'Whimper (dog)');
 
 ```
