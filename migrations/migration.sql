@@ -3,13 +3,19 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db
--- Generation Time: Apr 02, 2024 at 12:13 PM
+-- Generation Time: Apr 07, 2024 at 12:59 AM
 -- Server version: 8.3.0
 -- PHP Version: 8.2.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
 
 --
 -- Database: `sound`
@@ -36,6 +42,7 @@ CREATE TABLE `raw_sounds` (
   `class_5_percent` float NOT NULL,
   `decibel_reading` float NOT NULL,
   `record_datetime` datetime NOT NULL,
+  `device_id` int DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -47,7 +54,9 @@ CREATE TABLE `raw_sounds` (
 -- Indexes for table `raw_sounds`
 --
 ALTER TABLE `raw_sounds`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `created_at_index` (`created_at`),
+  ADD KEY `recorded_at` (`record_datetime`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -59,3 +68,7 @@ ALTER TABLE `raw_sounds`
 ALTER TABLE `raw_sounds`
   MODIFY `id` int NOT NULL AUTO_INCREMENT;
 COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
