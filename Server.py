@@ -14,13 +14,16 @@ import os
 
 load_dotenv()
 
-cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), password=os.getenv('MYSQL_PASSWORD'), host=os.getenv('MYSQL_HOST'), database=os.getenv('MYSQL_DATABASE'))
-mycursor = cnx.cursor()
-
 SERVER = os.getenv('SERVER')
 PORT = os.getenv('PORT')
 #Device ID 
 DEVICE_MASTER = [{"device_id": 0, "password": "password"}, {"device_id": 1, "password": "password"}]
+
+cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), 
+                              password=os.getenv('MYSQL_PASSWORD'), 
+                              host=os.getenv('MYSQL_HOST'), 
+                              database=os.getenv('MYSQL_DATABASE'))
+mycursor = cnx.cursor()
 
 def calculate_decibel(audio):
 
