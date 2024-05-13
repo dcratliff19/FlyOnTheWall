@@ -8,14 +8,17 @@ from scipy.io.wavfile import write
 import pyaudio
 import sys
 import csv
+from dotenv import load_dotenv
+import os
 
-
+load_dotenv()
 
 def get_sound_example(id, sec_before = 1, sec_after = 1):
 
-    cnx = mysql.connector.connect(user='root', password='password',
-                            host='127.0.0.1',
-                            database='sound')
+    cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), 
+                              password=os.getenv('MYSQL_PASSWORD'), 
+                              host=os.getenv('MYSQL_HOST'), 
+                              database=os.getenv('MYSQL_DATABASE'))
     mycursor = cnx.cursor()
 
     sql = 'SELECT * FROM `raw_sounds` WHERE id between ' + str(id - (sec_before)) + ' and ' + str(id + (sec_after)) + ';'

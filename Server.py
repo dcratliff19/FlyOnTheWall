@@ -11,13 +11,14 @@ from logo import LOGO
 import mysql.connector
 from dotenv import load_dotenv
 import os
+import json
 
 load_dotenv()
 
 SERVER = os.getenv('SERVER')
 PORT = os.getenv('PORT')
 #Device ID 
-DEVICE_MASTER = [{"device_id": 0, "password": "password"}, {"device_id": 1, "password": "password"}]
+DEVICE_MASTER = json.load('users.json')
 
 cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), 
                               password=os.getenv('MYSQL_PASSWORD'), 

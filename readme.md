@@ -13,7 +13,7 @@
 FlyOnTheWall is an open source software that collects audio records from client nodes, uses [Google's MediaPipe](https://developers.google.com/mediapipe/solutions/audio/audio_classifier) machine learning library to classify the sounds into one of [yamnet's classes](https://storage.googleapis.com/mediapipe-tasks/audio_classifier/yamnet_label_list.txt), and stores that data into a MySQL Database for later analysis.
 
 ## Setup
-1. Setthe environment variables in .env
+1. Set the environment variables in .env
 2. Run the migration (`migrations/migration.sql`) in whatever the database you have set in the .env
 3. Install the requirements (`pip install -r requirements.txt`)
 4. Fly!
@@ -142,3 +142,7 @@ select * from final_table
 where sound in ('Domestic animals, pets', 'Dog', 'Bark', 'Yip', 'Howl', 'Bow-wow', 'Growling', 'Whimper (dog)');
 
 ```
+
+
+TODO:
+- Add indexes to the database table.
