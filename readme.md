@@ -16,7 +16,9 @@ FlyOnTheWall is an open source software that collects audio records from client 
 1. Set the environment variables in .env
 2. Run the migration (`migrations/migration.sql`) in whatever the database you have set in the .env
 3. Install the requirements (`pip install -r requirements.txt`)
-4. Fly!
+4. Start the server: `python3 FlyOnTheWall --server`
+5. Start the client: `python3 FlyOnTheWall --client`
+6. Login and start transmission.
 
 ## CLI Tool
 
