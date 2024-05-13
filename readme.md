@@ -13,18 +13,18 @@
 FlyOnTheWall is an open source software that collects audio records from client nodes, uses [Google's MediaPipe](https://developers.google.com/mediapipe/solutions/audio/audio_classifier) machine learning library to classify the sounds into one of [yamnet's classes](https://storage.googleapis.com/mediapipe-tasks/audio_classifier/yamnet_label_list.txt), and stores that data into a MySQL Database for later analysis.
 
 ## Setup
-1. create a database called `sound` and run the migration (`migration.sql`)
-2. Update the connection info in Server.py
-3. Install mediapipe.
-3. Fly!
+1. Setthe environment variables in .env
+2. Run the migration (`migrations/migration.sql`) in whatever the database you have set in the .env
+3. Install the requirements (`pip install -r requirements.txt`)
+4. Fly!
 
 ## CLI Tool
 
 Options:
 ```bash
 --query: Use the database row ID to search for the audio file.     
-      -Args: 1 = database ID, 2 = seconds before, 3 = seconds after 
-      -Example: --id 64 2 2
+    -Args: 1 = database ID, 2 = seconds before, 3 = seconds after 
+    -Example: --id 64 2 2
 --client: runs the FlyOnTheWall Client.
 --server: Runs the FlyOnTheWall server.
 ```
@@ -36,13 +36,13 @@ Note: the MySQL database must be running first.
 
 1. **raw_audio_bytes** - The audio stored as in it's raw byte format.
 2. **class_1 to class_5** - The 5 most likely classes found by the neural network. 	
-3. **class_1_percent to class_5_percent** - The 5 confidence levels for the corosponding classes. 	
+3. **class_1_percent to class_5_percent** - The 5 confidence levels for the corresponding classes. 	
 4. **decibel_reading** - The estimated decibel reading using:
 ```python 
 rms = audioop.rms(audio, 1) / 32767
 db = 20 * log10(rms)
 ```
-5. **record_datetime** - Time and Date the sound occured.	
+5. **record_datetime** - Time and Date the sound occurred.	
 6. **device_id** - The device ID that recorded the sound.	
 7. **created_at** - The timestamp the record was created at.
 
@@ -68,7 +68,7 @@ CREATE TABLE `raw_sounds` (
 ```
 
 # Reporting using the Raw Data
-The following SQL script can be used to run a report on the occurance of dog barks in the data.
+The following SQL script can be used to run a report on the occurrence of dog barks in the data.
 ### Dataset Example:
 ```
 sound	                   class avg(decibel_reading) count(*)	
