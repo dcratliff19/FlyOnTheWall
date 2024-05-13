@@ -8,13 +8,18 @@ import pickle
 from websocket import create_connection
 import timeit 
 from logo import LOGO
+from dotenv import load_dotenv
+import os
 
-CHUNK = 1024
+load_dotenv()
+
 FORMAT = pyaudio.paInt16
 CHANNELS = 1 if sys.platform == 'darwin' else 2
-RATE = 44100
-RECORD_SECONDS = 1
-REMOTE_SERVER = "ws://localhost:5000/"
+
+CHUNK = int(os.getenv('CHUNK'))
+RATE = int(os.getenv('RATE'))
+RECORD_SECONDS = int(os.getenv('RECORD_SECONDS'))
+REMOTE_SERVER = "ws://" + os.getenv('SERVER') + ":" + os.getenv('PORT') + "/"
 
 p = pyaudio.PyAudio()
 

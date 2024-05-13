@@ -115,8 +115,10 @@ if __name__ == "__main__":
     elif sys.argv[1] == "--help":
 
         print("Commands:")
-        print("--id: Use the database row ID to search for the audio file.\n     -Args: 1 = database ID, 2 = seconds before, 3 = seconds after \n     -Example: --id 64 2 2")
-    
+        print("--query: Use the database row ID to search for the audio file.\n-Args: 1 = row ID, 2 = seconds before, 3 = seconds after \n-Example: --id 64 2 2")
+        print("--server: Start the server.")
+        print("--client: Start the client.")
+
     # Change when classes are implemented
     elif sys.argv[1] == "--server":
         exec(open("Server.py").read())

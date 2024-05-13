@@ -9,12 +9,16 @@ import time
 import audioop
 from logo import LOGO
 import mysql.connector
+from dotenv import load_dotenv
+import os
 
-cnx = mysql.connector.connect(user='root', password='password', host='127.0.0.1', database='sound')
+load_dotenv()
+
+cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), password=os.getenv('MYSQL_PASSWORD'), host=os.getenv('MYSQL_HOST'), database=os.getenv('MYSQL_DATABASE'))
 mycursor = cnx.cursor()
 
-SERVER = "localhost"
-PORT = 5000
+SERVER = os.getenv('SERVER')
+PORT = os.getenv('PORT')
 #Device ID 
 DEVICE_MASTER = [{"device_id": 0, "password": "password"}, {"device_id": 1, "password": "password"}]
 
