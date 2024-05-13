@@ -18,7 +18,8 @@ load_dotenv()
 SERVER = os.getenv('SERVER')
 PORT = os.getenv('PORT')
 #Device ID 
-DEVICE_MASTER = json.load('users.json')
+f = open('users.json')
+DEVICE_MASTER = json.load(f)
 
 cnx = mysql.connector.connect(user=os.getenv('MYSQL_USERNAME'), 
                               password=os.getenv('MYSQL_PASSWORD'), 
